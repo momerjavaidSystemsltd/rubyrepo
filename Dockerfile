@@ -1,4 +1,4 @@
-FROM ruby:2.5.3
+FROM ruby:2.6.1
 
 # Create app directory
 ENV APP_HOME /usr/src/app
