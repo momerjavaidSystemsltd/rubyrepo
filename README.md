@@ -1,64 +1,69 @@
 # **Sinatra WebMF**
 
-## **Using on Mac OS X Host**
+## **Running the Service**
 
-* Prerequisites:
-  * Install XCode Command Line Tools
-  * Install Brew `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+### **Locally with Rack**
 
-
-### **Install Using RVM (OS X)**
-
-* Install XCode Command Line Tools
-* Install Brew `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+With a Ruby environment installed and bundler gem (`gem install bundler`), you can run the application locally with:
 
 ```bash
-brew install gpg
-gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-# command curl -sSL https://rvm.io/mpapis.asc | gpg --import -
-\curl -sSL https://get.rvm.io | bash -s stable
-source ~/.profile
-rvm install 2.3.0
-rvm default 2.3.0
-gem install bundler
+bundle install   # install Sinatra library
+rackup &         # start server via Rack
+# manually test
+curl -i localhost:3000/
+curl -i localhost:3000/hello/Simon
 ```
 
-## **Run**
+### **Using Docker-Compose**
 
 ```bash
-bundle install      # install Sinatra library
-rackup              # start server via Rack
-```
-## **Using Docker or Vagrant**
-
-See [Tools Readme](../TOOLS.md) for more information on install, setup, and start Docker or Vagrant.
-
-### **Build and Run with Docker Compose**
-
-```bash
-$ docker-compose up -d
+docker-compose up -d  # start up container
+# set server IP address
+[ -z ${DOCKER_MACHINE_NAME} ] || WEBSERVER=$(docker-machine ip ${DOCKER_MACHINE_NAME})
+WEBSERVER=${WEBSERVER:-localhost}
+# manually test
+curl -i ${WEBSERVER}:3000/
+curl -i ${WEBSERVER}:3000/hello/Simon
 ```
 
-### **Build and Run with Vagrant**
+### **Using Docker in Vagrant/Virtualbox**
 
 ```bash
-$ vagrant up
+vagrant up  # start up virtualbox w/ docker container
+# manually test
+curl -i localhost:3000/
+curl -i localhost:3000/hello/Simon
 ```
 
 ## **Testing**
 
+### **Locally**
+
+There are basic unit tests provided, to run them simply run:
+
 ```bash
-$ [ -z ${DOCKER_MACHINE_NAME} ] || WEBSERVER=$(docker-machine ip ${DOCKER_MACHINE_NAME})
-$ WEBSERVER=${WEBSERVER:-localhost}
-$ PORT=3000
-$ curl -i ${WEBSERVER}:${PORT}
-HTTP/1.1 200 OK
-Content-Type: text/html;charset=utf-8
-Content-Length: 14
-X-Xss-Protection: 1; mode=block
-X-Content-Type-Options: nosniff
-X-Frame-Options: SAMEORIGIN
-Server: WEBrick/1.3.1 (Ruby/2.3.0/2015-12-25)
-Date: Sun, 13 Mar 2016 18:24:16 GMT
-Connection: Keep-Alive
+rake
 ```
+
+### **Continious Integration**
+
+In a CI system, for a test stage, you can run:
+
+```bash
+rake ci:all
+```
+
+A `Jenkinsfile` using DSL pipeline is provided to demonstrate this solution.
+
+## Resources
+
+* Web Microframework:
+    * [Sinatra](http://sinatrarb.com/)
+* Test Frameworks
+    * [Rack-Test](https://github.com/rack-test/rack-test)
+    * [Testing Sinatra with Rack::Test](http://sinatrarb.com/testing.html)
+    * [Test::Unit](http://test-unit.github.io/index.html)
+    * [CI Reporter](https://github.com/ci-reporter/ci_reporter)
+    * [CI Reporter for Test Unit](https://github.com/ci-reporter/ci_reporter_test_unit)
+* Jenkins Declarative Pipeline for Ruby
+    * [Creating your first Pipeline: Ruby](https://jenkins.io/doc/pipeline/tour/hello-world/#ruby)
