@@ -5,4 +5,5 @@ gem 'sinatra-contrib'
 
 group :test do
   gem 'rack-test'
+  gem 'ci_reporter_test_unit'
 end

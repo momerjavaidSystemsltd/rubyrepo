@@ -9,12 +9,16 @@ pipeline {
     stage('build') {
       steps {
         sh 'bundle install'
-        sh 'rackup &'
       }
     }
     stage('test') {
       steps {
-        sh 'rake'
+        sh 'rake ci:all'
+      }
+      post {
+        always {
+          junit 'test/reports/TEST-AppTest.xml'
+        }
       }    
     }
   }
