@@ -14,7 +14,7 @@ pipeline {
     }
     stage('test') {
       steps {
-        sh 'curl -i localhost:3000'
+        sh 'rake'
       }    
     }
   }
